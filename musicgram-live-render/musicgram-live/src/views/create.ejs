@@ -1,0 +1,11 @@
+<div class="card">
+  <h3>Novo post</h3>
+  <% if (typeof error !== 'undefined') { %><div class="small" style="color:#ff8080"><%= error %></div><% } %>
+  <form method="post">
+    <label>URL da imagem (http/https)</label>
+    <input class="input" name="image_url" placeholder="https://..." required>
+    <label>Legenda (opcional)</label>
+    <input class="input" name="caption" placeholder="Escreva algo...">
+    <button class="btn primary">Publicar</button>
+  </form>
+</div>

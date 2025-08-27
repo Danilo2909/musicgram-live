@@ -1,0 +1,24 @@
+<article class="card">
+  <div class="spread">
+    <div><b>@<%= post.username %></b></div>
+    <div class="small"><%= new Date(post.created_at).toLocaleString() %></div>
+  </div>
+  <img src="<%= post.image_url %>" style="width:100%;border-radius:12px;margin:8px 0">
+  <div><b>@<%= post.username %></b> <%= post.caption || '' %></div>
+</article>
+
+<section class="card">
+  <h3>Comentários</h3>
+  <% if (!comments.length) { %><div class="small">Seja o primeiro a comentar</div><% } %>
+  <% comments.forEach(c => { %>
+    <div style="margin:6px 0"><b>@<%= c.username %>:</b> <%= c.text %></div>
+  <% }) %>
+  <% if (user) { %>
+    <form method="post" action="/post/<%= post.id %>/comment" style="margin-top:8px">
+      <input class="input" name="text" placeholder="Escreva um comentário..." required>
+      <button class="btn">Enviar</button>
+    </form>
+  <% } else { %>
+    <div class="small">Entre para comentar.</div>
+  <% } %>
+</section>

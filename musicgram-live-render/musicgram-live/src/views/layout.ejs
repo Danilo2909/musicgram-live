@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Musicgram Live</title>
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+<header class="header">
+  <b>Musicgram</b>
+  <nav>
+    <a class="btn" href="/">Início</a>
+    <a class="btn" href="/explore">Explorar</a>
+    <% if (user) { %>
+      <a class="btn" href="/create">Criar</a>
+      <a class="btn" href="/messages">Mensagens</a>
+      <a class="btn" href="/profile/<%= user.username %>">Perfil</a>
+      <form method="post" action="/logout" style="display:inline"><button class="btn">Sair</button></form>
+    <% } else { %>
+      <a class="btn" href="/login">Entrar</a>
+    <% } %>
+  </nav>
+</header>
+<div class="container">
+  <%- body %>
+</div>
+</body>
+</html>

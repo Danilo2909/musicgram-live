@@ -1,0 +1,6 @@
+<div class="card"><b>Explorar</b></div>
+<div class="grid3">
+  <% posts.forEach(p => { %>
+    <a href="/post/<%= p.id %>"><img src="<%= p.image_url %>" alt=""></a>
+  <% }) %>
+</div>

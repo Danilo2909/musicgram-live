@@ -1,0 +1,14 @@
+<% if (!posts.length) { %>
+  <div class="card">Seu feed está vazio. Siga alguém para ver posts ou vá para <a href="/explore">Explorar</a>.</div>
+<% } %>
+<% posts.forEach(p => { %>
+  <article class="card">
+    <div class="spread">
+      <b>@<%= p.username %></b>
+      <span class="small"><%= new Date(p.created_at).toLocaleString() %></span>
+    </div>
+    <img src="<%= p.image_url %>" alt="" style="width:100%;border-radius:12px;margin:8px 0">
+    <div><b>@<%= p.username %></b> <%= p.caption || '' %></div>
+    <div><a class="btn" href="/post/<%= p.id %>">Abrir</a></div>
+  </article>
+<% }) %>

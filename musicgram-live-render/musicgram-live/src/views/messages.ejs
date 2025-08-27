@@ -1,0 +1,10 @@
+<section class="card">
+  <h3>Mensagens</h3>
+  <% if (!threads.length) { %><div class="small">Nenhuma conversa ainda.</div><% } %>
+  <% threads.forEach(t => { %>
+    <div class="spread" style="padding:8px 0">
+      <div>@<%= t.other_username %> <span class="small"><%= t.unread ? ('· '+t.unread+' novas') : '' %></span></div>
+      <div><a class="btn" href="/chat/<%= t.id %>">Abrir</a></div>
+    </div>
+  <% }) %>
+</section>

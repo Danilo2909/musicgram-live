@@ -1,0 +1,28 @@
+<section class="card">
+  <div class="spread">
+    <div>
+      <h3 style="margin:0"><%= profile.name %> <span class="small">@<%= profile.username %></span></h3>
+      <div class="small"><%= profile.bio || '' %></div>
+      <div class="small" style="margin-top:6px"><b><%= stats.posts %></b> posts · <b><%= stats.followers %></b> seguidores · <b><%= stats.following %></b> seguindo</div>
+      <% if (relationship.friends) { %><div class="badge">Amigos</div><% } %>
+    </div>
+    <div>
+      <% if (user && user.username !== profile.username) { %>
+        <% if (relationship.iFollow) { %>
+          <form method="post" action="/unfollow/<%= profile.username %>"><button class="btn">Deixar de seguir</button></form>
+        <% } else { %>
+          <form method="post" action="/follow/<%= profile.username %>"><button class="btn primary">Seguir</button></form>
+        <% } %>
+        <form method="post" action="/messages/start/<%= profile.username %>" style="display:inline"><button class="btn">Mensagem</button></form>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <div class="grid3">
+    <% posts.forEach(p => { %>
+      <a href="/post/<%= p.id %>"><img src="<%= p.image_url %>" alt=""></a>
+    <% }) %>
+  </div>
+</section>

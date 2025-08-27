@@ -1,0 +1,11 @@
+<div class="card">
+  <h3>Criar conta</h3>
+  <% if (typeof error !== 'undefined') { %><div class="small" style="color:#ff8080"><%= error %></div><% } %>
+  <form method="post">
+    <input class="input" name="username" placeholder="Usuário" required>
+    <input class="input" name="name" placeholder="Nome" required>
+    <input class="input" name="password" type="password" placeholder="Senha" required>
+    <button class="btn primary">Registrar</button>
+  </form>
+  <div class="small">já tem? <a href="/login">entrar</a></div>
+</div>

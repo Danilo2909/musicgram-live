@@ -1,7 +1,19 @@
 
+<section class="card">
+  <div class="stories">
+    <% (new Array(8)).fill(0).forEach((_,i)=>{ %>
+      <div class="story">
+        <div class="ring"><div class="avatar"></div></div>
+        <div class="small">story<%= i+1 %></div>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
 <% if (!posts.length) { %>
-  <div class="empty">Seu feed está vazio. Siga alguém para ver posts ou vá para <a href="/explore"><b>Explorar</b></a>.</div>
+  <div class="card empty">Seu feed está vazio. Publique algo ou siga pessoas em <a href="/explore"><b>Explorar</b></a>.</div>
 <% } %>
+
 <% posts.forEach(p => { %>
   <article class="post card">
     <div class="head">
@@ -11,15 +23,8 @@
         <div class="small"><%= new Date(p.created_at).toLocaleString() %></div>
       </div>
     </div>
-    <div class="imgwrap">
-      <img src="<%= p.image_url %>" alt="post de @<%= p.username %>">
-    </div>
-    <div class="actions">
-      <svg class="icon"><use href="/public/icons.svg#heart"/></svg>
-      <a class="small" href="/post/<%= p.id %>">Comentários</a>
-    </div>
-    <% if (p.caption) { %>
-      <div class="caption"><b><%= p.username %></b> <%= p.caption %></div>
-    <% } %>
+    <div class="img"><img src="<%= p.image_url %>" alt=""></div>
+    <div class="bar"><svg class="icon"><use href="/public/icons.svg#heart"/></svg></div>
+    <% if (p.caption) { %><div class="cap"><b><%= p.username %></b> <%= p.caption %></div><% } %>
   </article>
 <% }) %>

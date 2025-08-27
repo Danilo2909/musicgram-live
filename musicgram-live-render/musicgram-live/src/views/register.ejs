@@ -1,12 +1,12 @@
 
-<div class="card form-card">
+<div class="form">
   <h3 style="margin:0 0 6px 0">Criar conta</h3>
-  <% if (typeof error !== 'undefined') { %><div class="small" style="color:#d00"><%= error %></div><% } %>
+  <% if (typeof error !== 'undefined') { %><div class="small" style="color:#f88"><%= error %></div><% } %>
   <form method="post" style="margin-top:10px">
     <input class="input" name="username" placeholder="Usuário" required>
     <input class="input" name="name" placeholder="Nome" required style="margin-top:8px">
     <input class="input" name="password" type="password" placeholder="Senha" required style="margin-top:8px">
-    <button class="btn primary" style="width:100%;margin-top:10px">Registrar</button>
+    <button class="btn primary" style="width:100%;margin-top:12px">Registrar</button>
   </form>
   <div class="small" style="margin-top:10px">já tem? <a href="/login">entrar</a></div>
 </div>

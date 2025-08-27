@@ -7,10 +7,8 @@
       <div class="small"><%= new Date(post.created_at).toLocaleString() %></div>
     </div>
   </div>
-  <div class="imgwrap">
-    <img src="<%= post.image_url %>" alt="">
-  </div>
-  <% if (post.caption) { %><div class="caption"><b><%= post.username %></b> <%= post.caption %></div><% } %>
+  <div class="img"><img src="<%= post.image_url %>" alt=""></div>
+  <% if (post.caption) { %><div class="cap"><b><%= post.username %></b> <%= post.caption %></div><% } %>
 </article>
 
 <section class="card">

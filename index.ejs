@@ -1,0 +1,25 @@
+
+<% if (!posts.length) { %>
+  <div class="empty">Seu feed está vazio. Siga alguém para ver posts ou vá para <a href="/explore"><b>Explorar</b></a>.</div>
+<% } %>
+<% posts.forEach(p => { %>
+  <article class="post card">
+    <div class="head">
+      <div class="avatar"></div>
+      <div>
+        <div><a href="/profile/<%= p.username %>"><b><%= p.username %></b></a></div>
+        <div class="small"><%= new Date(p.created_at).toLocaleString() %></div>
+      </div>
+    </div>
+    <div class="imgwrap">
+      <img src="<%= p.image_url %>" alt="post de @<%= p.username %>">
+    </div>
+    <div class="actions">
+      <svg class="icon"><use href="/public/icons.svg#heart"/></svg>
+      <a class="small" href="/post/<%= p.id %>">Comentários</a>
+    </div>
+    <% if (p.caption) { %>
+      <div class="caption"><b><%= p.username %></b> <%= p.caption %></div>
+    <% } %>
+  </article>
+<% }) %>

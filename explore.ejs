@@ -1,0 +1,10 @@
+
+<section class="card">
+  <h3 style="margin:0">Explorar</h3>
+  <p class="small" style="margin-top:4px">Posts recentes da comunidade</p>
+</section>
+<div class="grid3">
+  <% posts.forEach(p => { %>
+    <a href="/post/<%= p.id %>"><img src="<%= p.image_url %>" alt=""></a>
+  <% }) %>
+</div>

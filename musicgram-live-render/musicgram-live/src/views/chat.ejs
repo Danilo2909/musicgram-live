@@ -1,9 +1,12 @@
+
 <section class="card chat">
-  <div class="row"><b>Chat</b></div>
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <h3 style="margin:0">Chat</h3>
+  </div>
   <div id="chatlog" class="chatlog"></div>
-  <form id="composer" class="row" style="margin-top:8px">
+  <form id="composer" style="display:flex;gap:8px;margin-top:8px">
     <input class="input" id="msg" placeholder="Mensagem...">
-    <button class="btn">Enviar</button>
+    <button class="btn primary">Enviar</button>
   </form>
 </section>
 
@@ -12,18 +15,18 @@
   const threadId = <%- JSON.stringify(threadId) %>;
   const socket = io({ path:'/socket.io' });
   const log = document.getElementById('chatlog');
+  const me = <%- JSON.stringify(user && user.id) %>;
 
-  socket.on('connect', ()=> socket.emit('join', 'thread:'+threadId));
-
-  socket.on('chat:newMessage', (m)=>{
-    if(m.thread_id !== threadId) return;
+  const add = (m) => {
     const div = document.createElement('div');
-    const me = <%- JSON.stringify(user && user.id) %>;
-    div.className = 'msg' + (m.from_user_id===me ? ' me' : '');
+    div.className = 'bubble' + (m.from_user_id===me ? ' me' : '');
     div.textContent = m.body;
     log.appendChild(div);
     log.scrollTop = log.scrollHeight;
-  });
+  };
+
+  socket.on('connect', ()=> socket.emit('join', 'thread:'+threadId));
+  socket.on('chat:newMessage', (m)=>{ if(m.thread_id===threadId) add(m); });
 
   document.getElementById('composer').addEventListener('submit', (e)=>{
     e.preventDefault();

@@ -1,29 +1,36 @@
+
 <!doctype html>
 <html lang="pt-br">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Musicgram Live</title>
+  <title>Musicgram</title>
   <link rel="stylesheet" href="/public/style.css">
 </head>
 <body>
 <header class="header">
-  <b>Musicgram</b>
-  <nav>
-    <a class="btn" href="/">Início</a>
-    <a class="btn" href="/explore">Explorar</a>
-    <% if (user) { %>
-      <a class="btn" href="/create">Criar</a>
-      <a class="btn" href="/messages">Mensagens</a>
-      <a class="btn" href="/profile/<%= user.username %>">Perfil</a>
-      <form method="post" action="/logout" style="display:inline"><button class="btn">Sair</button></form>
-    <% } else { %>
-      <a class="btn" href="/login">Entrar</a>
-    <% } %>
-  </nav>
+  <div class="nav container">
+    <a class="brand" href="/">Musicgram</a>
+    <div class="right">
+      <a class="iconbtn" title="Início" href="/"><svg class="icon"><use href="/public/icons.svg#home"/></svg></a>
+      <a class="iconbtn" title="Explorar" href="/explore"><svg class="icon"><use href="/public/icons.svg#search"/></svg></a>
+      <% if (user) { %>
+        <a class="iconbtn" title="Criar" href="/create"><svg class="icon"><use href="/public/icons.svg#plus"/></svg></a>
+        <a class="iconbtn" title="Mensagens" href="/messages"><svg class="icon"><use href="/public/icons.svg#msg"/></svg></a>
+        <a class="iconbtn" title="Perfil" href="/profile/<%= user.username %>"><svg class="icon"><use href="/public/icons.svg#user"/></svg></a>
+        <form method="post" action="/logout" style="display:inline;margin-left:8px">
+          <button class="btn">Sair</button>
+        </form>
+      <% } else { %>
+        <a class="btn primary" href="/login">Entrar</a>
+      <% } %>
+    </div>
+  </div>
 </header>
-<div class="container">
+<main class="container">
   <%- body %>
-</div>
+</main>
+<script src="/public/app.js" defer></script>
+<footer class="footer-note small">© Musicgram — demo educacional</footer>
 </body>
 </html>

@@ -1,11 +1,14 @@
-<div class="card">
-  <h3>Novo post</h3>
-  <% if (typeof error !== 'undefined') { %><div class="small" style="color:#ff8080"><%= error %></div><% } %>
+
+<div class="card form-card">
+  <h3 style="margin:0 0 10px 0">Novo post</h3>
   <form method="post">
-    <label>URL da imagem (http/https)</label>
-    <input class="input" name="image_url" placeholder="https://..." required>
-    <label>Legenda (opcional)</label>
+    <label class="small">URL da imagem</label>
+    <input class="input" name="image_url" placeholder="https://..." required data-preview-url>
+    <label class="small" style="margin-top:8px">Legenda (opcional)</label>
     <input class="input" name="caption" placeholder="Escreva algo...">
-    <button class="btn primary">Publicar</button>
+    <button class="btn primary" style="width:100%;margin-top:12px">Publicar</button>
+    <div style="margin-top:12px;display:flex;justify-content:center">
+      <img data-preview-img style="max-height:360px;border:1px solid var(--line);border-radius:12px;display:none">
+    </div>
   </form>
 </div>

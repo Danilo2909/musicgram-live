@@ -3,13 +3,20 @@ const { Pool } = pkg;
 
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  ssl: { rejectUnauthorized: false },
 });
 
-export async function migrate(){
+/**
+ * Executa migrações idempotentes (pode rodar várias vezes sem quebrar).
+ * Observação: Postgres não permite expressões na cláusula UNIQUE dentro do CREATE TABLE.
+ * Por isso, criamos a tabela `threads` sem a UNIQUE e depois criamos um índice único por expressão.
+ */
+export async function migrate() {
   const c = await pool.connect();
-  try{
+  try {
     await c.query('BEGIN');
+
+    // USERS
     await c.query(`
       create table if not exists users(
         id serial primary key,
@@ -21,8 +28,12 @@ export async function migrate(){
         last_seen timestamptz default now(),
         created_at timestamptz default now()
       );
+    `);
+    await c.query(`
       create index if not exists idx_users_username on users(lower(username));
     `);
+
+    // FOLLOWS
     await c.query(`
       create table if not exists follows(
         id serial primary key,
@@ -31,9 +42,15 @@ export async function migrate(){
         created_at timestamptz default now(),
         unique (follower_id, following_id)
       );
+    `);
+    await c.query(`
       create index if not exists idx_follows_follower on follows(follower_id);
+    `);
+    await c.query(`
       create index if not exists idx_follows_following on follows(following_id);
     `);
+
+    // POSTS
     await c.query(`
       create table if not exists posts(
         id serial primary key,
@@ -42,8 +59,12 @@ export async function migrate(){
         caption text,
         created_at timestamptz default now()
       );
+    `);
+    await c.query(`
       create index if not exists idx_posts_user_created on posts(user_id, created_at desc);
     `);
+
+    // COMMENTS
     await c.query(`
       create table if not exists comments(
         id serial primary key,
@@ -52,17 +73,29 @@ export async function migrate(){
         text text not null,
         created_at timestamptz default now()
       );
+    `);
+    await c.query(`
       create index if not exists idx_comments_post_created on comments(post_id, created_at);
     `);
+
+    // THREADS (sem UNIQUE com expressão dentro do CREATE TABLE)
     await c.query(`
       create table if not exists threads(
         id serial primary key,
         user_a int not null references users(id) on delete cascade,
         user_b int not null references users(id) on delete cascade,
         created_at timestamptz default now(),
-        constraint uniq_pair unique (least(user_a,user_b), greatest(user_a,user_b))
+        check (user_a <> user_b)
       );
     `);
+
+    // Índice único por expressão para garantir par único (independente da ordem).
+    await c.query(`
+      create unique index if not exists uniq_threads_pair
+      on threads (LEAST(user_a, user_b), GREATEST(user_a, user_b));
+    `);
+
+    // MESSAGES
     await c.query(`
       create table if not exists messages(
         id serial primary key,
@@ -72,12 +105,16 @@ export async function migrate(){
         created_at timestamptz default now(),
         read_at timestamptz
       );
+    `);
+    await c.query(`
       create index if not exists idx_messages_thread_created on messages(thread_id, created_at);
     `);
+
     await c.query('COMMIT');
-  }catch(e){
-    await c.query('ROLLBACK'); throw e;
-  }finally{
+  } catch (e) {
+    await c.query('ROLLBACK');
+    throw e;
+  } finally {
     c.release();
   }
 }

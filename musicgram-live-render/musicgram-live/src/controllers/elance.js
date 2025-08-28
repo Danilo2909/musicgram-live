@@ -1,10 +1,135 @@
-const pool = require('../db/pool');
-function meId(req){ return (req?.session?.user?.id) || (req?.user?.id); }
-exports.home = async (req,res)=>{ const me = meId(req) || 0; const { rows: posts } = await pool.query(`SELECT p.id, p.body, p.created_at, u.id AS author_id, COALESCE(u.name, u.username) AS author_name, u.username FROM posts p JOIN users u ON u.id = p.user_id WHERE p.user_id = $1 OR p.user_id IN (SELECT following_id FROM follows WHERE follower_id=$1) ORDER BY p.created_at DESC LIMIT 50`, [me]); res.render('index', { posts, active:'home', title:'Elance · Home' }); };
-exports.discover = async (req,res)=>{ const me = meId(req) || 0; const q = (req.query.q||'').trim(); const params = [me]; let sql = `SELECT u.id, COALESCE(u.name,u.username) AS name, u.username, COALESCE(fc.cnt,0) AS followers FROM users u LEFT JOIN (SELECT following_id, COUNT(*) cnt FROM follows GROUP BY following_id) fc ON fc.following_id = u.id WHERE u.id <> $1 AND NOT EXISTS (SELECT 1 FROM follows f WHERE f.follower_id=$1 AND f.following_id=u.id)`; if(q){ params.push('%'+q.toLowerCase()+'%'); sql += ` AND (LOWER(u.name) LIKE $2 OR LOWER(u.username) LIKE $2)`; } sql += ` ORDER BY followers DESC NULLS LAST, name ASC LIMIT 20`; const { rows: suggested } = await pool.query(sql, params); res.render('discover', { suggested, q, active:'discover', title:'Elance · Discover' }); };
-exports.network = async (req,res)=>{ const me = meId(req); if(!me) return res.redirect('/login'); const [following, followers] = await Promise.all([ pool.query(`SELECT u.id, COALESCE(u.name,u.username) AS name, u.username FROM follows f JOIN users u ON u.id=f.following_id WHERE f.follower_id=$1 ORDER BY name ASC`, [me]), pool.query(`SELECT u.id, COALESCE(u.name,u.username) AS name, u.username FROM follows f JOIN users u ON u.id=f.follower_id WHERE f.following_id=$1 ORDER BY name ASC`, [me]), ]); res.render('network', { following: following.rows, followers: followers.rows, active:'network', title:'Elance · Network' }); };
-exports.follow = async (req,res)=>{ const me = meId(req); const other = parseInt(req.params.id,10); if(!me || !other || me===other) return res.redirect('back'); await pool.query(`INSERT INTO follows(follower_id,following_id) VALUES($1,$2) ON CONFLICT DO NOTHING`, [me, other]); res.redirect('back'); };
-exports.unfollow = async (req,res)=>{ const me = meId(req); const other = parseInt(req.params.id,10); if(!me || !other) return res.redirect('back'); await pool.query(`DELETE FROM follows WHERE follower_id=$1 AND following_id=$2`, [me, other]); res.redirect('back'); };
-exports.like = async (req,res)=>{ const me = meId(req); const postId = parseInt(req.params.id,10); if(!me || !postId) return res.redirect('back'); await pool.query(`INSERT INTO likes(user_id,post_id) VALUES($1,$2) ON CONFLICT DO NOTHING`, [me, postId]); res.redirect('back'); };
-exports.unlike = async (req,res)=>{ const me = meId(req); const postId = parseInt(req.params.id,10); if(!me || !postId) return res.redirect('back'); await pool.query(`DELETE FROM likes WHERE user_id=$1 AND post_id=$2`, [me, postId]); res.redirect('back'); };
-exports.comment = async (req,res)=>{ const me = meId(req); const postId = parseInt(req.params.id,10); const body = (req.body.body||'').trim(); if(!me || !postId || !body) return res.redirect('back'); await pool.query(`INSERT INTO comments(post_id,user_id,body) VALUES($1,$2,$3)`, [postId, me, body]); res.redirect('back'); };
+
+import pool from '../db/pool.js';
+
+const meId = (req) => (req?.session?.user?.id) || (req?.user?.id);
+
+/* -------------------- FEED -------------------- */
+export async function home(req, res) {
+  const me = meId(req) || 0;
+  const { rows: posts } = await pool.query(`
+    SELECT p.id, p.body, p.created_at,
+           u.id AS author_id, COALESCE(u.name, u.username) AS author_name, u.username
+    FROM posts p
+    JOIN users u ON u.id = p.user_id
+    WHERE p.user_id = $1
+       OR p.user_id IN (SELECT following_id FROM follows WHERE follower_id=$1)
+    ORDER BY p.created_at DESC
+    LIMIT 50`, [me]);
+  res.render('index', { posts, active: 'home', title: 'Elance · Home' });
+}
+
+/* -------------------- DISCOVER -------------------- */
+export async function discover(req, res) {
+  const me = meId(req) || 0;
+  const q = (req.query.q || '').trim();
+  const params = [me];
+  let sql = `
+    SELECT u.id, COALESCE(u.name,u.username) AS name, u.username,
+           COALESCE(fc.cnt,0) AS followers
+    FROM users u
+    LEFT JOIN (
+      SELECT following_id, COUNT(*) cnt FROM follows GROUP BY following_id
+    ) fc ON fc.following_id = u.id
+    WHERE u.id <> $1
+      AND NOT EXISTS (
+        SELECT 1 FROM follows f WHERE f.follower_id=$1 AND f.following_id=u.id
+      )`;
+
+  if (q) {
+    params.push('%' + q.toLowerCase() + '%');
+    sql += ` AND (LOWER(u.name) LIKE $2 OR LOWER(u.username) LIKE $2)`;
+  }
+
+  sql += ` ORDER BY followers DESC NULLS LAST, name ASC LIMIT 20`;
+
+  const { rows: suggested } = await pool.query(sql, params);
+  res.render('discover', { suggested, q, active: 'discover', title: 'Elance · Discover' });
+}
+
+/* -------------------- NETWORK -------------------- */
+export async function network(req, res) {
+  const me = meId(req);
+  if (!me) return res.redirect('/login');
+
+  const [following, followers] = await Promise.all([
+    pool.query(`
+      SELECT u.id, COALESCE(u.name,u.username) AS name, u.username
+      FROM follows f JOIN users u ON u.id = f.following_id
+      WHERE f.follower_id = $1
+      ORDER BY name ASC`, [me]),
+    pool.query(`
+      SELECT u.id, COALESCE(u.name,u.username) AS name, u.username
+      FROM follows f JOIN users u ON u.id = f.follower_id
+      WHERE f.following_id = $1
+      ORDER BY name ASC`, [me]),
+  ]);
+
+  res.render('network', {
+    following: following.rows,
+    followers: followers.rows,
+    active: 'network', title: 'Elance · Network'
+  });
+}
+
+/* -------------------- FOLLOW / UNFOLLOW -------------------- */
+export async function follow(req, res) {
+  const me = meId(req);
+  const other = parseInt(req.params.id, 10);
+  if (!me || !other || me === other) return res.redirect('back');
+
+  await pool.query(
+    `INSERT INTO follows(follower_id,following_id) VALUES($1,$2) ON CONFLICT DO NOTHING`,
+    [me, other]
+  );
+  res.redirect('back');
+}
+
+export async function unfollow(req, res) {
+  const me = meId(req);
+  const other = parseInt(req.params.id, 10);
+  if (!me || !other) return res.redirect('back');
+
+  await pool.query(
+    `DELETE FROM follows WHERE follower_id=$1 AND following_id=$2`,
+    [me, other]
+  );
+  res.redirect('back');
+}
+
+/* -------------------- LIKES & COMMENTS -------------------- */
+export async function like(req, res) {
+  const me = meId(req);
+  const postId = parseInt(req.params.id, 10);
+  if (!me || !postId) return res.redirect('back');
+
+  await pool.query(
+    `INSERT INTO likes(user_id,post_id) VALUES($1,$2) ON CONFLICT DO NOTHING`,
+    [me, postId]
+  );
+  res.redirect('back');
+}
+
+export async function unlike(req, res) {
+  const me = meId(req);
+  const postId = parseInt(req.params.id, 10);
+  if (!me || !postId) return res.redirect('back');
+
+  await pool.query(
+    `DELETE FROM likes WHERE user_id=$1 AND post_id=$2`,
+    [me, postId]
+  );
+  res.redirect('back');
+}
+
+export async function comment(req, res) {
+  const me = meId(req);
+  const postId = parseInt(req.params.id, 10);
+  const body = (req.body.body || '').trim();
+  if (!me || !postId || !body) return res.redirect('back');
+
+  await pool.query(
+    `INSERT INTO comments(post_id,user_id,body) VALUES($1,$2,$3)`,
+    [postId, me, body]
+  );
+  res.redirect('back');
+}

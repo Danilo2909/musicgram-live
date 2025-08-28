@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/public/elance.css">
 </head>
 <body class="elance">
+  <% const _active = (typeof active !== 'undefined') ? active : ''; %>
   <div class="el-shell">
     <header class="el-header">
       <div class="el-brand">
@@ -26,14 +27,14 @@
     </header>
     <aside class="el-sidebar">
       <nav class="el-nav">
-        <a href="/" class="<%= (typeof active!=='undefined' && active==='home') ? 'is-active' : '' %>">
+        <a href="/" class="<%= (_active==='home') ? 'is-active' : '' %>">
           <svg class="el-ico" viewBox="0 0 24 24" width="18" height="18"><use href="/public/icons.svg#ico-home"></use></svg>Home
         </a>
-        <a href="/discover" class="<%= (active==='discover') ? 'is-active' : '' %>">Discover</a>
-        <a href="/network" class="<%= (active==='network') ? 'is-active' : '' %>">Network</a>
-        <a href="/messages" class="<%= (active==='messages') ? 'is-active' : '' %>">Messages</a>
-        <a href="/projects" class="<%= (active==='projects') ? 'is-active' : '' %>">Projects</a>
-        <a href="/profile" class="<%= (active==='profile') ? 'is-active' : '' %>">Profile</a>
+        <a href="/discover" class="<%= (_active==='discover') ? 'is-active' : '' %>">Discover</a>
+        <a href="/network" class="<%= (_active==='network') ? 'is-active' : '' %>">Network</a>
+        <a href="/messages" class="<%= (_active==='messages') ? 'is-active' : '' %>">Messages</a>
+        <a href="/projects" class="<%= (_active==='projects') ? 'is-active' : '' %>">Projects</a>
+        <a href="/profile" class="<%= (_active==='profile') ? 'is-active' : '' %>">Profile</a>
       </nav>
     </aside>
     <main class="el-main"><%- body %></main>

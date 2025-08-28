@@ -192,4 +192,8 @@ router.get('/discover', async (req, res) => {
   res.render('discover', { });
 });
 
+router.get('/projects', requireAuth, (req, res) => {
+  res.render('create');
+});
+
 export default router;

@@ -1,5 +1,3 @@
-
-/* Minimal but robust ELANCE CSS including icon sizing */
 :root{--el-bg:#0b1220;--el-bg-2:#0f172a;--el-card:#131f36;--el-stroke:#223150;--el-text:#e5e7eb;--el-text-dim:#9ca3af;--el-maxw:1260px;--el-focus:rgba(96,165,250,.35)}
 .elance{color:var(--el-text);background:linear-gradient(180deg,#0b1220 0,#0b1220 200px,#0a1020 100%);min-height:100vh;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
 .el-ico{width:18px;height:18px;display:inline-block;vertical-align:middle;fill:currentColor}

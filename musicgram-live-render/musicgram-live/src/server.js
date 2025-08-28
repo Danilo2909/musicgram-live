@@ -30,7 +30,7 @@ const sessionMiddleware = session({
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));     // src/views
 app.use(expressLayouts);                              //  NOVO
-app.set('layout', 'layoutElance');
+app.set('layout', 'layout');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

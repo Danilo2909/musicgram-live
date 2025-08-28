@@ -1,30 +1,31 @@
+<% layout('layout.elance') -%>
+<% title = 'Elance · Home' %>
+<% active = 'home' %>
 
-<section class="card">
-  <div class="stories">
-    <% (new Array(8)).fill(0).forEach((_,i)=>{ %>
-      <div class="story">
-        <div class="ring"><div class="avatar"></div></div>
-        <div class="small">story<%= i+1 %></div>
+<div class="el-grid">
+  <section class="el-feed">
+    <article class="el-card">
+      <div class="el-card__body">
+        <div class="el-post">
+          <div class="el-post__avatar"><img src="/public/u1.jpg" alt=""></div>
+          <div class="el-post__header">
+            <span class="el-post__user">Danilo</span>
+            <span class="el-post__time el-muted">· 2h</span>
+          </div>
+          <div class="el-post__body">Primeiro post no <strong>Elance</strong> 🚀</div>
+          <div class="el-post__meta"><span>243 likes</span><span>18 comments</span></div>
+        </div>
       </div>
-    <% }) %>
-  </div>
-</section>
+    </article>
+  </section>
 
-<% if (!posts.length) { %>
-  <div class="card empty">Seu feed está vazio. Publique algo ou siga pessoas em <a href="/explore"><b>Explorar</b></a>.</div>
-<% } %>
-
-<% posts.forEach(p => { %>
-  <article class="post card">
-    <div class="head">
-      <div class="avatar"></div>
-      <div>
-        <div><a href="/profile/<%= p.username %>"><b><%= p.username %></b></a></div>
-        <div class="small"><%= new Date(p.created_at).toLocaleString() %></div>
+  <aside class="el-card">
+    <div class="el-card__head"><strong>Trending</strong></div>
+    <div class="el-card__body">
+      <div class="el-list">
+        <div class="el-item"><span>#ux</span><span class="el-right el-muted">12k</span></div>
+        <div class="el-item"><span>#backend</span><span class="el-right el-muted">9k</span></div>
       </div>
     </div>
-    <div class="img"><img src="<%= p.image_url %>" alt=""></div>
-    <div class="bar"><svg class="icon"><use href="/public/icons.svg#heart"/></svg></div>
-    <% if (p.caption) { %><div class="cap"><b><%= p.username %></b> <%= p.caption %></div><% } %>
-  </article>
-<% }) %>
+  </aside>
+</div>

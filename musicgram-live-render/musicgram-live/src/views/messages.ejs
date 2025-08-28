@@ -1,11 +1,20 @@
+<% layout('layout.elance') -%>
+<% title = 'Elance · Messages' %>
+<% active = 'messages' %>
 
-<section class="card">
-  <h3 style="margin:0 0 8px 0">Mensagens</h3>
-  <% if (!threads.length) { %><div class="empty">Nenhuma conversa ainda.</div><% } %>
-  <% threads.forEach(t => { %>
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--line)">
-      <div>@<%= t.other_username %> <span class="small"><%= t.unread ? ('· '+t.unread+' novas') : '' %></span></div>
-      <a class="btn" href="/chat/<%= t.id %>">Abrir</a>
+<div class="el-messages">
+  <div class="el-chat-list">
+    <div class="el-chat-item"><img src="/public/u2.jpg"><div><strong>Bea</strong><div class="el-muted">Você tá livre amanhã?</div></div></div>
+    <div class="el-chat-item"><img src="/public/u3.jpg"><div><strong>João</strong><div class="el-muted">Bora fechar o PR</div></div></div>
+  </div>
+
+  <div class="el-thread">
+    <div class="el-thread__head"><strong>Bea</strong></div>
+    <div class="el-thread__body">
+      <div class="el-card el-py el-px">Oi! 😄</div>
     </div>
-  <% }) %>
-</section>
+    <div class="el-thread__foot">
+      <form><input class="el-input" placeholder="Escreva uma mensagem…"></form>
+    </div>
+  </div>
+</div>

@@ -1,34 +1,17 @@
+<% layout('layout.elance') -%>
+<% title = 'Elance · Profile' %>
+<% active = 'profile' %>
 
-<section class="card">
-  <div style="display:flex;align-items:center;gap:16px">
-    <div class="avatar" style="width:72px;height:72px"></div>
-    <div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <h2 style="margin:0"><%= profile.username %></h2>
-        <% if (user && user.username !== profile.username) { %>
-          <% if (relationship.iFollow) { %>
-            <form method="post" action="/unfollow/<%= profile.username %>"><button class="btn">Deixar de seguir</button></form>
-          <% } else { %>
-            <form method="post" action="/follow/<%= profile.username %>"><button class="btn primary">Seguir</button></form>
-          <% } %>
-          <form method="post" action="/messages/start/<%= profile.username %>"><button class="btn">Mensagem</button></form>
-        <% } %>
+<div class="el-card">
+  <div class="el-card__body">
+    <div class="el-profile-header">
+      <img src="/public/u1.jpg" alt="">
+      <div>
+        <h2>Danilo</h2>
+        <div class="el-muted">Full‑stack • São Paulo</div>
+        <div class="el-badge">Open to work</div>
       </div>
-      <div class="small" style="margin-top:6px"><%= profile.name %> · <%= profile.bio || '' %></div>
-      <div style="display:flex;gap:16px;margin-top:10px">
-        <div><b><%= stats.posts %></b> posts</div>
-        <div><b><%= stats.followers %></b> seguidores</div>
-        <div><b><%= stats.following %></b> seguindo</div>
-        <% if (relationship.friends) { %><div class="small" style="color:var(--brand)">Amigos</div><% } %>
-      </div>
+      <button class="el-btn el-btn--primary">Edit Profile</button>
     </div>
   </div>
-</section>
-
-<section class="card">
-  <div class="grid3">
-    <% posts.forEach(p => { %>
-      <a href="/post/<%= p.id %>"><img src="<%= p.image_url %>" alt=""></a>
-    <% }) %>
-  </div>
-</section>
+</div>

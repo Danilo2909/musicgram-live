@@ -1,14 +1,19 @@
+<% layout('layout.elance') -%>
+<% title = 'Elance · Create Post' %>
+<% active = 'projects' %>
 
-<div class="form">
-  <h3 style="margin:0 0 10px 0">Novo post</h3>
-  <form method="post">
-    <label class="small">URL da imagem</label>
-    <input class="input" name="image_url" placeholder="https://..." required data-preview-url>
-    <label class="small" style="margin-top:8px">Legenda (opcional)</label>
-    <input class="input" name="caption" placeholder="Escreva algo...">
-    <button class="btn primary" style="width:100%;margin-top:12px">Publicar</button>
-    <div style="margin-top:12px;display:flex;justify-content:center">
-      <img data-preview-img style="max-height:360px;border:1px solid var(--line);border-radius:12px;display:none">
+<div class="el-compose">
+  <div class="el-card">
+    <div class="el-card__head"><strong>Create Post</strong></div>
+    <div class="el-card__body">
+      <input class="el-input el-mb" placeholder="Título">
+      <textarea class="el-textarea el-mb" placeholder="Escreva algo…"></textarea>
+      <button class="el-btn el-btn--primary">Publicar</button>
     </div>
-  </form>
+  </div>
+
+  <aside class="el-card">
+    <div class="el-card__head"><strong>Preview</strong></div>
+    <div class="el-card__body el-muted">Sua prévia aparecerá aqui</div>
+  </aside>
 </div>

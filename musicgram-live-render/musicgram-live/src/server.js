@@ -7,7 +7,7 @@ import helmet from 'helmet';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import rateLimit from 'express-rate-limit';
-import expressLayouts from 'express-ejs-layouts';  // ✅ NOVO
+import expressLayouts from 'express-ejs-layouts';  //  NOVO
 import { pool, migrate } from './db.js';
 import { attachUser } from './auth.js';
 import router from './routes.js';
@@ -26,17 +26,17 @@ const sessionMiddleware = session({
   cookie: { maxAge: 7*24*60*60*1000 }
 });
 
-// ✅ Views + layouts
+//  Views + layouts
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));     // src/views
-app.use(expressLayouts);                              // ✅ NOVO
-app.set('layout', 'layout');                          // ✅ NOVO (usa src/views/layout.ejs)
+app.use(expressLayouts);                              //  NOVO
+app.set('layout', 'layout.elance');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(helmet({ contentSecurityPolicy: false }));
 
-// ✅ estáticos: garanta que aponta para ../public (irmão de src)
+//  estáticos: garanta que aponta para ../public (irmão de src)
 app.use('/public', express.static(path.join(__dirname, '..', 'public')));
 
 app.use(sessionMiddleware);

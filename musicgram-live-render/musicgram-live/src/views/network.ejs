@@ -1,8 +1,27 @@
 <% title = 'Elance · Network' %><% active = 'network' %>
-<div class="el-card">
-  <div class="el-card__head"><strong>People you may know</strong></div>
-  <div class="el-card__body el-list">
-    <div class="el-person"><div class="meta"><img src="/public/u2.jpg"><div><strong>Bea</strong><div class="el-muted">Designer</div></div></div><button class="el-btn el-btn--primary">Connect</button></div>
-    <div class="el-person"><div class="meta"><img src="/public/u3.jpg"><div><strong>João</strong><div class="el-muted">Backend</div></div></div><button class="el-btn el-btn--ghost">Connect</button></div>
-  </div>
+<div class="el-grid" style="grid-template-columns:1fr 1fr;">
+  <section class="el-card">
+    <div class="el-card__head"><strong>Following</strong></div>
+    <div class="el-card__body el-list">
+      <% (following||[]).forEach(u => { %>
+        <div class="el-person">
+          <div class="meta"><img src="/public/u2.jpg"><div><strong><%= u.name %></strong><div class="el-muted">@<%= u.username %></div></div></div>
+          <form method="post" action="/u/<%= u.id %>/unfollow"><button class="el-btn el-btn--ghost">Unfollow</button></form>
+        </div>
+      <% }) %>
+      <% if (!following || following.length===0) { %><div class="el-muted">Você ainda não segue ninguém.</div><% } %>
+    </div>
+  </section>
+  <section class="el-card">
+    <div class="el-card__head"><strong>Followers</strong></div>
+    <div class="el-card__body el-list">
+      <% (followers||[]).forEach(u => { %>
+        <div class="el-person">
+          <div class="meta"><img src="/public/u3.jpg"><div><strong><%= u.name %></strong><div class="el-muted">@<%= u.username %></div></div></div>
+          <form method="post" action="/u/<%= u.id %>/follow"><button class="el-btn el-btn--primary">Follow back</button></form>
+        </div>
+      <% }) %>
+      <% if (!followers || followers.length===0) { %><div class="el-muted">Ninguém te segue ainda.</div><% } %>
+    </div>
+  </section>
 </div>

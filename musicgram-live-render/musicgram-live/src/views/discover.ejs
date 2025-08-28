@@ -1,14 +1,29 @@
 <% title = 'Elance · Discover' %><% active = 'discover' %>
 <div class="el-card">
-  <div class="el-card__head"><strong>Discover</strong></div>
-  <div class="el-card__body">
-    <div class="el-discover-grid">
-      <div class="el-card"><div class="el-card__body">Projeto A</div></div>
-      <div class="el-card"><div class="el-card__body">Projeto B</div></div>
-      <div class="el-card"><div class="el-card__body">Projeto C</div></div>
-      <div class="el-card"><div class="el-card__body">Projeto D</div></div>
-      <div class="el-card"><div class="el-card__body">Projeto E</div></div>
-      <div class="el-card"><div class="el-card__body">Projeto F</div></div>
-    </div>
+  <div class="el-card__head" style="gap:12px;">
+    <strong>Discover</strong>
+    <form action="/discover" method="get" class="el-right" style="display:flex;gap:8px;align-items:center;max-width:360px;width:100%;">
+      <input class="el-input" name="q" value="<%= q || '' %>" placeholder="Buscar pessoas…">
+      <button class="el-btn el-btn--ghost" type="submit">Buscar</button>
+    </form>
+  </div>
+  <div class="el-card__body el-list">
+    <% (suggested||[]).forEach(u => { %>
+      <div class="el-person">
+        <div class="meta">
+          <img src="/public/u2.jpg">
+          <div>
+            <strong><%= u.name %></strong>
+            <div class="el-muted">@<%= u.username %> • <%= u.followers %> followers</div>
+          </div>
+        </div>
+        <form method="post" action="/u/<%= u.id %>/follow">
+          <button class="el-btn el-btn--primary" type="submit">Connect</button>
+        </form>
+      </div>
+    <% }) %>
+    <% if (!suggested || suggested.length === 0) { %>
+      <div class="el-muted">Nada encontrado. Tente outro nome.</div>
+    <% } %>
   </div>
 </div>

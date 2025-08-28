@@ -1,22 +1,33 @@
 <% title = 'Elance · Home' %><% active = 'home' %>
 <div class="el-grid">
   <section class="el-feed">
-    <article class="el-card">
-      <div class="el-card__body">
-        <div class="el-post">
-          <div class="el-post__avatar"><img src="/public/u1.jpg" alt=""></div>
-          <div class="el-post__header"><span class="el-post__user">Danilo</span><span class="el-post__time el-muted">· 2h</span></div>
-          <div class="el-post__body">Primeiro post no <strong>Elance</strong> 🚀</div>
-          <div class="el-post__meta"><span>243 likes</span><span>18 comments</span></div>
+    <% if (!posts || posts.length === 0) { %>
+      <div class="el-card"><div class="el-card__body el-muted">Seu feed está vazio. Siga algumas pessoas em <a href="/discover">Discover</a>.</div></div>
+    <% } %>
+    <% (posts||[]).forEach(p => { %>
+      <article class="el-card">
+        <div class="el-card__body">
+          <div class="el-post">
+            <div class="el-post__avatar"><img src="/public/u1.jpg" alt=""></div>
+            <div class="el-post__header">
+              <span class="el-post__user"><%= p.author_name %></span>
+              <span class="el-post__time el-muted"><%= new Date(p.created_at).toLocaleString() %></span>
+            </div>
+            <div class="el-post__body"><%= p.body %></div>
+            <div class="el-post__meta">
+              <form method="post" action="/p/<%= p.id %>/like"><button class="el-btn el-btn--ghost" type="submit">Like</button></form>
+              <form method="post" action="/p/<%= p.id %>/unlike"><button class="el-btn el-btn--ghost" type="submit">Unlike</button></form>
+            </div>
+            <form method="post" action="/p/<%= p.id %>/comment" class="el-mt">
+              <input class="el-input" name="body" placeholder="Escreva um comentário…">
+            </form>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
+    <% }) %>
   </section>
   <aside class="el-card">
     <div class="el-card__head"><strong>Trending</strong></div>
-    <div class="el-card__body"><div class="el-list">
-      <div class="el-item"><span>#ux</span><span class="el-right el-muted">12k</span></div>
-      <div class="el-item"><span>#backend</span><span class="el-right el-muted">9k</span></div>
-    </div></div>
+    <div class="el-card__body el-muted">Em breve</div>
   </aside>
 </div>

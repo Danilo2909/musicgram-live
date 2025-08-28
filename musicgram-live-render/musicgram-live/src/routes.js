@@ -188,4 +188,8 @@ router.post('/api/threads/:id/read', requireAuth, async (req,res)=>{
   res.json({ ok:true });
 });
 
+router.get('/discover', async (req, res) => {
+  res.render('discover', { });
+});
+
 export default router;

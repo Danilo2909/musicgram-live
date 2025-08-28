@@ -1,47 +1,47 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Musicgram</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title><%= typeof title !== 'undefined' ? title : "Elance" %></title>
+  <% /* mantém seu style.css se existir */ %>
   <link rel="stylesheet" href="/public/style.css">
+  <link rel="stylesheet" href="/public/elance.css">
 </head>
-<body>
-<svg style="position:absolute;width:0;height:0"><use href="/public/icons.svg#home"/></svg>
-<div class="layout">
-  <aside class="sidebar">
-    <div class="logo">Musicgram</div>
-    <nav class="nav">
-      <a href="/"><svg class="icon"><use href="/public/icons.svg#home"/></svg><span>Página inicial</span></a>
-      <a href="/explore"><svg class="icon"><use href="/public/icons.svg#search"/></svg><span>Explorar</span></a>
-      <% if (user) { %>
-        <a href="/create"><svg class="icon"><use href="/public/icons.svg#plus"/></svg><span>Criar</span></a>
-        <a href="/messages"><svg class="icon"><use href="/public/icons.svg#msg"/></svg><span>Mensagens</span></a>
-        <a href="/profile/<%= user.username %>"><svg class="icon"><use href="/public/icons.svg#user"/></svg><span>Perfil</span></a>
-        <form method="post" action="/logout" style="padding:10px">
-          <button class="btn" style="width:100%">Sair</button>
-        </form>
-      <% } else { %>
-        <a href="/login" class="btn" style="margin:10px">Entrar</a>
-      <% } %>
-    </nav>
-  </aside>
-
-  <main class="center">
-    <%- body %>
-  </main>
-
-  <aside class="right">
-    <div class="suggest">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <b>Sugestões para você</b>
-        <a class="small" href="/explore">Ver tudo</a>
+<body class="elance">
+  <div class="el-shell">
+    <header class="el-header">
+      <div class="el-brand">
+        <div class="el-logo"></div><span>ELANCE</span>
       </div>
-      <div style="margin-top:10px" class="small">Siga pessoas para popular seu feed 🙂</div>
-    </div>
-  </aside>
-</div>
-<script src="/public/app.js" defer></script>
+
+      <form class="el-search" action="/search" method="get">
+        <input name="q" placeholder="Buscar no Elance…">
+        <svg class="el-ico" viewBox="0 0 24 24"><use href="/public/icons.svg#ico-search"></use></svg>
+      </form>
+
+      <div class="el-actions">
+        <button class="el-btn-ico" aria-label="Notificações">
+          <svg class="el-ico" viewBox="0 0 24 24"><use href="/public/icons.svg#ico-bell"></use></svg>
+        </button>
+        <img class="el-avatar" src="/public/avatar.png" alt="Perfil" onerror="this.style.display='none'">
+      </div>
+    </header>
+
+    <aside class="el-sidebar">
+      <nav class="el-nav">
+        <a href="/" class="<%= (typeof active!=='undefined' && active==='home') ? 'is-active' : '' %>">
+          <svg class="el-ico" viewBox="0 0 24 24"><use href="/public/icons.svg#ico-home"></use></svg>Home
+        </a>
+        <a href="/discover" class="<%= (active==='discover') ? 'is-active' : '' %>">Discover</a>
+        <a href="/network" class="<%= (active==='network') ? 'is-active' : '' %>">Network</a>
+        <a href="/messages" class="<%= (active==='messages') ? 'is-active' : '' %>">Messages</a>
+        <a href="/projects" class="<%= (active==='projects') ? 'is-active' : '' %>">Projects</a>
+        <a href="/profile" class="<%= (active==='profile') ? 'is-active' : '' %>">Profile</a>
+      </nav>
+    </aside>
+
+    <main class="el-main"><%- body %></main>
+  </div>
 </body>
 </html>

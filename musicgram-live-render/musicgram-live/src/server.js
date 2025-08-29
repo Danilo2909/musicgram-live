@@ -15,23 +15,23 @@ import { setupSockets } from './ws.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
-
-// **Importante no Render/Heroku/Nginx**
-// Confia nos cabeçalhos do proxy (X-Forwarded-For / Proto) para IP real e HTTPS
-app.set('trust proxy', 1);
+app.set('trust proxy', 1); // necessário no Render para cookies e IP via proxy
 
 const httpServer = createServer(app);
 const io = new SocketIOServer(httpServer, { path: '/socket.io' });
 
-// Sessions (MemoryStore ok para single instance)
+// Sessões — ajustado para não expirar após login no Render
 const sessionMiddleware = session({
+  name: 'sid',
   secret: process.env.SESSION_SECRET || 'changeme',
   resave: false,
   saveUninitialized: false,
+  rolling: true,
+  proxy: true,
   cookie: {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production' // cookie só via HTTPS em prod
+    secure: 'auto'
   }
 });
 
@@ -53,27 +53,30 @@ app.use(attachUser);
 
 // Health
 app.get('/health', async (_req, res) => {
-  try {
-    await pool.query('select 1');
-    res.json({ ok: true });
-  } catch {
-    res.status(500).json({ ok: false });
-  }
+  try { await pool.query('select 1'); res.json({ ok: true }); }
+  catch { res.status(500).json({ ok: false }); }
 });
 
-// Rate limit (usa IP correto graças ao trust proxy)
+// Rate limit
 const limiter = rateLimit({
-  windowMs: 60_000, // 1 min
+  windowMs: 60_000,
   limit: 120,
   standardHeaders: true,
   legacyHeaders: false
-  // Se, por algum motivo, quiser ignorar X-Forwarded-For validation:
-  // validate: { xForwardedForHeader: false }
 });
 app.use(['/login','/register','/create','/post','/api'], limiter);
 
-// Rotas
+// Rotas app
 app.use(router);
+
+// Error handler amigável (evita 502)
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  if (res.headersSent) return next(err);
+  res.status(500);
+  try { return res.render('error', { title:'Erro · Elance', message: err.message || 'Erro interno' }); }
+  catch { return res.send('Erro interno'); }
+});
 
 // Sockets
 setupSockets(io, sessionMiddleware);

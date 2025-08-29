@@ -1,3 +1,4 @@
+
 import express from 'express';
 import * as elance from './controllers/elance.js';
 
@@ -8,21 +9,34 @@ const requireAuth = (req, res, next) => {
   return res.redirect('/login');
 };
 
-// ---------- Auth provisória ----------
+// ---------- Auth provisória (corrigida) ----------
 router.get('/login', (req, res) => {
   res.render('login', { title: 'Entrar · Elance' });
 });
 
-router.post('/login', express.urlencoded({ extended: true }), (req, res) => {
+router.post('/login', express.urlencoded({ extended: true }), (req, res, next) => {
   const id = parseInt(req.body.user_id || '1', 10) || 1;
   const username = (req.body.username || 'demo').trim() || 'demo';
-  req.session.user = { id, username };
-  res.redirect('/');
+
+  // Regenerate a sessão para evitar fixation e garantir persistência antes do redirect
+  req.session.regenerate(err => {
+    if (err) return next(err);
+    req.session.user = { id, username };
+    req.session.save(err2 => {
+      if (err2) return next(err2);
+      return res.redirect('/');
+    });
+  });
 });
 
 router.get('/logout', (req, res) => {
   req.session.destroy?.(()=>{});
   res.redirect('/login');
+});
+
+// Debug opcional: ver a sessão
+router.get('/me', (req,res)=>{
+  res.json({ user: req.session?.user || null });
 });
 
 // ---------- Elance core ----------
